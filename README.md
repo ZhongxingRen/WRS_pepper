@@ -5,6 +5,7 @@ We combine naoqi sdk to ROS.
 
 
 ======NOTE=======
+
 change pepper's ip of pepper_start_jy.launch and WRS_pepper.py
 
 =====USAGE=======
