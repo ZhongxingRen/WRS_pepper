@@ -1,0 +1,9 @@
+<launch>   
+ <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" output="screen">
+        <param name="scan_height" value="40"/> 
+        <param name="range_max" value="10"/> 
+        <param name="output_frame_id" value="base_link"/> 
+        <remap from="image" to="pepper_robot/camera/depth_registered/sw_registered/image_rect_raw" />
+        <remap from="camera_info" to="pepper_robot/camera/depth_registered/sw_registered/camera_info" />
+</node>
+</launch>
