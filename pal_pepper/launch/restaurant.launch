@@ -1,0 +1,59 @@
+<launch>
+
+  <param name="/use_sim_time" value="false" />
+  <arg name="nao_ip"              default="$(optenv NAO_IP 192.168.3.18)" />
+  <arg name="nao_port"            default="$(optenv NAO_PORT 9559)" />
+  <arg name="scan_topic" default="scan"/>
+  <arg name="roscore_ip"          default="127.0.0.1" />
+  <arg name="network_interface"   default="wlp2s0" />
+
+  <!-- pepper_full-->
+  <include file="$(find pepper_bringup)/launch/pepper_full.launch">
+
+    <arg name="nao_ip"            value="$(arg nao_ip)" />
+    <arg name="nao_port"          value="$(arg nao_port)" />
+    <arg name="roscore_ip"        value="$(arg roscore_ip)" />
+    <arg name="network_interface" value="$(arg network_interface)" />
+
+  </include>
+    <!--- Depth image to laser scan -->
+
+
+    <!--- Cmd_vel to motor -->
+
+    <node name="cmdvel_pub" pkg="pal_pepper" type="pepper_cmd_vel_publisher.py" output="screen" args="$(arg nao_ip) $(arg nao_port)"/>
+    <node name="scan_merger" pkg="pal_pepper" type="scan_merger.py" output="screen" args="$(arg nao_ip) $(arg nao_port)" /> 
+
+
+
+    <node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" >
+        <param name="scan_height" value="10"/> 
+        <param name="range_max" value="20"/> 
+        <param name="output_frame_id" value="base_link"/> 
+        <remap from="image" to="pepper_robot/camera/depth_registered/sw_registered/image_rect_raw" />
+        <remap from="camera_info" to="pepper_robot/camera/depth_registered/sw_registered/camera_info" />
+    </node>
+  <!-- Map server -->
+  <arg name="map_file" default="$(find pal_pepper)/launch/maps/empty_map.yaml"/>
+  <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
+
+  <!-- AMCL -->
+  <arg name="custom_amcl_launch_file" default="$(find pal_pepper)/launch/includes/amcl/asus_xtion_pro_amcl.launch.xml"/>
+  <arg name="initial_pose_x" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_y" default="0.0"/> <!-- Use 17.0 for willow's map in simulation -->
+  <arg name="initial_pose_a" default="0.0"/>
+  <include file="$(arg custom_amcl_launch_file)">
+    <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+    <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+    <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+  </include>
+
+  <!-- Move base -->
+  <arg name="custom_param_file" default="$(find pal_pepper)/param/asus_xtion_pro_costmap_params.yaml"/>
+  <include file="$(find pal_pepper)/launch/includes/pepper_move_base.xml">
+    <arg name="custom_param_file" value="$(arg custom_param_file)"/>
+  </include>
+
+  <!-- Rviz -->
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find pal_pepper)/config/pepper.rviz" />
+</launch>

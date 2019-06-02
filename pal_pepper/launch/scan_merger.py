@@ -9,7 +9,7 @@ from sensor_msgs.msg import LaserScan
 
 class scan_merger:
 	def __init__(self):
-		self.s1 = rospy.Subscriber('/pepper_robot/laser', LaserScan, self.cb1, queue_size=1)
+		self.s1 = rospy.Subscriber('/pepper_robot/naoqi_driver/laser', LaserScan, self.cb1, queue_size=1)
 		self.s2 = rospy.Subscriber('/scan', LaserScan, self.cb2, queue_size=1)	
 		self.p = rospy.Publisher('/scan_merged',LaserScan,queue_size=1)
 		self.msg = LaserScan()

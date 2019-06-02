@@ -4,7 +4,7 @@
 #
 shutdown_costmaps: false
 
-controller_frequency: 5.0
+controller_frequency: 5.0 # 表示更新规划进程的频率
 controller_patience: 3.0
 
 
