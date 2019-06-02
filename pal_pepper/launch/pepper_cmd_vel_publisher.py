@@ -24,7 +24,7 @@ class cmdvel:
 		self.motion =  self.session.service("ALMotion")
 
 		rospy.init_node('pepper_cmdvel_pub')
-		cmd_vel_sub = rospy.Subscriber("/cmd_vel", Twist, self.cmd_vel_callback) 
+		cmd_vel_sub = rospy.Subscriber("/cmd_vel1", Twist, self.cmd_vel_callback) 
 		rospy.spin()
 
 	def cmd_vel_callback(self,msg):
@@ -32,7 +32,7 @@ class cmdvel:
 		x = msg.linear.x
 		y = msg.linear.y
 		w = msg.angular.z
-		self.set_velocity(x,y,z)
+		self.set_velocity(x,y,w)
 
 	def set_velocity(self,x,y,theta): #m/sec, rad/sec
 		#set robot's velocity (note that you should set velocity to (0,0,0) after movement)

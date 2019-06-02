@@ -1,6 +1,8 @@
 <launch>
+  <!--dont need to launch 3dsensor-->
+  
   <!-- Map server -->
-  <arg name="map_file" default="$(find pal_pepper)/launch/maps/map.yaml"/>
+  <arg name="map_file" default="$(find pal_pepper)/launch/maps/tianjin.yaml"/>
   <node name="map_server" pkg="map_server" type="map_server" args="$(arg map_file)" />
 
   <!-- AMCL -->
@@ -21,8 +23,7 @@
   </include>
 
   <!-- Rviz -->
-  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find pal_pepper
-          )/config/pepper.rviz" />
+  <node pkg="rviz" type="rviz" name="rviz" args="-d $(find pal_pepper)/config/pepper.rviz" />
 
 </launch>
 

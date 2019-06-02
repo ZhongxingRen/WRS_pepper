@@ -1,0 +1,37 @@
+<launch>
+
+  <param name="/use_sim_time" value="false" />
+  <arg name="nao_ip"              default="$(optenv NAO_IP 192.168.3.93)" />
+  <arg name="nao_port"            default="$(optenv NAO_PORT 9559)" />
+  <arg name="scan_topic" default="scan"/>
+  <arg name="roscore_ip"          default="127.0.0.1" />
+  <arg name="network_interface"   default="wlp2s0" />
+
+  <!-- pepper_full-->
+  <include file="$(find pepper_bringup)/launch/pepper_full.launch">
+
+    <arg name="nao_ip"            value="$(arg nao_ip)" />
+    <arg name="nao_port"          value="$(arg nao_port)" />
+    <arg name="roscore_ip"        value="$(arg roscore_ip)" />
+    <arg name="network_interface" value="$(arg network_interface)" />
+
+  </include>
+
+    <!--- Cmd_vel to motor -->
+<!--注释掉，应该是重复了-->
+<!--   <node name="cmdvel_pub" pkg="pal_pepper" type="pepper_cmd_vel_publisher.py" output="screen" args="$(arg nao_ip) $(arg nao_port)"/>-->
+<node name="scan_merger" pkg="pal_pepper" type="scan_merger.py" output="screen" args="$(arg nao_ip) $(arg nao_port)" /> 
+<node name="pub_camera_info" pkg="pal_pepper" type="pub_camera_info.py" output="screen" args="$(arg nao_ip) $(arg nao_port)" /> 
+<!--Turtlebot depthimage2laserscan-->
+<node pkg="depthimage_to_laserscan" type="depthimage_to_laserscan" name="depthimage_to_laserscan" >
+      <param name="scan_height" value="0"/>
+      <param name="output_frame_id" value="base_link"/>
+      <param name="range_min" value="0.45"/>
+      <remap from="image" to="/depth/image_raw"/>
+     <remap from="camera_info" to="/camera_info" />
+    </node>
+<!--
+
+  <include file="$(find simple_follower)/launch/laser_follower.launch"/>
+-->
+</launch>
